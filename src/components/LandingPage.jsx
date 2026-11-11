@@ -1,16 +1,46 @@
+import { useCallback, useRef, useState } from "react";
 import Wordmark from './Wordmark'
+import Card from "./Card";
+import Viewer from "./Viewer";
+import pieces from '../data/pieces'
+import usePointerLight from "../hooks/usePointerLight";
+import './LandingPage.css'
 
 export default function LandingPage({ ready }) {
+    const gridRef = useRef(null)
+    const [active, setActive] = useState(null)
+
+    usePointerLight(gridRef)
+
+    const open = useCallback((piece, rect) => setActive({ piece, rect }), [])
+
+    const close = useCallback(() => {
+        const id = active?.piece.id
+        setActive(null)
+        requestAnimationFrame(() => {
+            document.querySelector(`[data-id="${id}"]`)?.focus()
+        })
+    }, [active])
+
     return (
-        <header
-            style={{
-                padding: '1.6rem',
-                fontSize: '1.7rem',
-                opacity: ready ? 1 : 0,
-                transition: 'opacity 1.2s ease',
-            }}
-        >
-            <Wordmark glow={ready} />
-        </header>
+        <div className={`landing ${ready ? 'ready' : ''}`}>
+            <div className="glow" />
+            <header className="top">
+                <Wordmark glow={ready} />
+                <p>Everything here is dark until you light it. <br /> Click a piece to see it properly.</p>
+            </header>
+            <main className="grid" ref={gridRef}>
+                {pieces.map((piece, i) => (
+                    <Card
+                        key={piece.id}
+                        piece={piece}
+                        index={i}
+                        hidden={active?.piece.id === piece.id}
+                        onOpen={open}
+                    />
+                ))}
+            </main>
+            {active && <Viewer piece={active.piece} rect={active.rect} onClose={close} />}
+        </div>
     )
 }
