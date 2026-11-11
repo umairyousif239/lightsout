@@ -1,0 +1,32 @@
+.splash {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    display: grid;
+    place-items: center;
+    background: #040405;
+    color: #34343c;
+    cursor: pointer;
+    transition: opacity 1s ease 0.1s, color 0.8s;
+}
+
+.splash.lit {
+    background: #eee9da;
+    color: #14141a;
+    transition: none;
+}
+
+.splash.out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.splash .wm {
+    font-size: clamp(3.2rem, 15vw, 11rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .splash {
+        transition: none;
+    }
+}
