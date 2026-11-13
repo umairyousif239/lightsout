@@ -27,7 +27,7 @@ export default function LandingPage({ ready }) {
             <div className="glow" />
             <header className="top">
                 <Wordmark glow={ready} />
-                <p>Everything here is dark until you light it. <br /> Click a piece to see it properly.</p>
+                <p>Hover over the column with the mouse to see the preview. <br /> Click a piece to see it properly.</p>
             </header>
             <main className="grid" ref={gridRef}>
                 {pieces.map((piece, i) => (
