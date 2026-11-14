@@ -14,6 +14,15 @@ export default function LandingPage({ ready }) {
 
     const open = useCallback((piece, rect) => setActive({ piece, rect }), [])
 
+    const navigate = useCallback((dir) => {
+        setActive((current) => {
+            if (!current) return current
+            const i = pieces.findIndex((p) => p.id === current.piece.id)
+            const next = pieces[(i + dir + pieces.length) % pieces.length]
+            return { ...current, piece: next }
+        })
+    }, [])
+
     const close = useCallback(() => {
         const id = active?.piece.id
         setActive(null)
@@ -22,25 +31,35 @@ export default function LandingPage({ ready }) {
         })
     }, [active])
 
+    const index = active ? pieces.findIndex((p) => p.id === active.piece.id) : 0
+
     return (
         <div className={`landing ${ready ? 'ready' : ''}`}>
             <div className="glow" />
             <header className="top">
                 <Wordmark glow={ready} />
-                <p>Hover over the column with the mouse to see the preview. <br /> Click a piece to see it properly.</p>
+                <p>Everything here is dark until you light it. Click a piece to see it properly.</p>
             </header>
             <main className="grid" ref={gridRef}>
-                {pieces.map((piece, i) => (
+                {pieces.map((piece) => (
                     <Card
                         key={piece.id}
                         piece={piece}
-                        index={i}
                         hidden={active?.piece.id === piece.id}
                         onOpen={open}
                     />
                 ))}
             </main>
-            {active && <Viewer piece={active.piece} rect={active.rect} onClose={close} />}
+            {active && (
+                <Viewer
+                    piece={active.piece}
+                    rect={active.rect}
+                    index={index}
+                    total={pieces.length}
+                    onNavigate={navigate}
+                    onClose={close}
+                />
+            )}
         </div>
     )
 }

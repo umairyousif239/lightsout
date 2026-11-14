@@ -1,15 +1,9 @@
-import placeholders from "../data/placeholder";
-
-export default function Art({ piece }) {
-    if (piece.src) {
-        return <img src={piece.src} alt={`${piece.title} by ${piece.artist}`} />
-    }
-
+export default function Art({ piece, onRatio }) {
     return (
-        <div
-            className="svg"
-            aria-hidden="true"
-            dangerouslySetInnerHTML={{ __html: placeholders[piece.id] }}
+        <img
+            src={piece.src}
+            alt={`${piece.title} by ${piece.artist}`}
+            onLoad={(e) => onRatio?.(e.currentTarget.naturalWidth / e.currentTarget.naturalHeight)}
         />
     )
 }
